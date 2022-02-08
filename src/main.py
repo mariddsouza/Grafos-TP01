@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 
 # CRIANDO E IMPRIMINDO UM GRAFO #
 
-#inicializando estruturas básicas do grafo
+# inicializando estruturas básicas do grafo
+
+
 class Adj:
     def __init__(self, data, peso):
         self.vertex = data
@@ -12,11 +14,13 @@ class Adj:
         self.proximo = None
         self.explored = False
 
-#vértices
+# vértices
+
+
 class Grafo:
     def __init__(self, vertices):
         self.V = vertices
-        self.G = nx.Graph() #Usando networkx (Verificar se é Graph ou grafo)
+        self.G = nx.Graph()  # Usando networkx (Verificar se é Graph ou grafo)
         self.Time = 0
         self.grafo = [None]*self.V
 
@@ -32,8 +36,8 @@ class Grafo:
         self.G.add_node(vizinho1)
         self.G.add_node(vizinho2)
         self.G.add_edge(vizinho1, vizinho2, peso=peso)
-    
-    #imprimindo grafo
+
+    # imprimindo grafo
     def imprime_grafo(self):
         for i in range(self.V):
             print("lista do vertice {}\n".format(i), end="")
@@ -43,4 +47,6 @@ class Grafo:
                 temp = temp.proximo
             print(" \n")
 
-
+    # Retorna a ordem do grafo
+    def ordem_grafo(self):
+        return self.V - 1

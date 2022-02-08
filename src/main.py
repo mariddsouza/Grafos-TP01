@@ -50,3 +50,13 @@ class Grafo:
     # Retorna a ordem do grafo
     def ordem_grafo(self):
         return self.V - 1
+
+    # Tamanho do grafo
+    def tamanho_grafo(self):
+        tamanho = 0
+        for i in range(self.V):
+            temp = self.Grafo[i]
+            while temp:
+                tamanho += 1
+                temp = temp.proximo
+        return size

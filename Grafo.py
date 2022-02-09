@@ -1,4 +1,6 @@
 #Implementa as funções para a biblioteca de Grafos nao direcionados ponderados
+from matplotlib import collections
+from collections import defaultdict
 
 class Grafo:
 
@@ -119,12 +121,44 @@ class Grafo:
         # armazenar o numero de componentes conectados
         count = 0
         temp = []
+
         for v in range(self.vertices+1):
             if (visited[v] == False):
-                #self.DFSUtil2(v, visited)
                 self._DFS(v, visited, temp)
                 count += 1
 
         return count-1
+    
+    #--------VERIFICAR SE UM GRAFO POSSUI CICLO-------#
+
+
+
+    #----------DENSIDADE DO GRAFO------#
+    def densidade_grafo(self):
+        return self.tamanhoGrafo() / self.ordemGrafo()
+   
+
+    #-------DISTANCIA------#
+    def distancia(self, dist, menorcaminho):
+        min = 1e6
+        for v in range(self.ordemGrafo()):
+            if dist[v] < min and menorcaminho[v] ==False:
+                min = dist[v]
+                min_index = v 
+        return min_index
+    
+    '''
+    #----------CAMINHO-------#
+    def caminho(self, src):
+        src = src -1
+        dist = [1e6] * self.ordemGrafo()
+        dist[src] = 0 
+        menorcaminho = [False] * self.ordemGrafo()
+        for i in range(self.ordemGrafo()):
+            u = self.distancia(dist, menorcaminho)
+            menorcaminho[u] = True
+            for vertice in range (self.ordemGrafo()):
+                if (self.)
+    '''
 
     

@@ -23,7 +23,7 @@ while (opcao!=0):
         nomeOut = input("Insira o nome do arquivo de saida: ")
 
         with open(nomeOut, "w") as arqOut:
-            arqOut.write("--------------------------IMPRIMINDO GRAFO--------------------------------------")
+            arqOut.write("\n--------------------------IMPRIMINDO GRAFO--------------------------------------\n")
 
             g.imprimeGrafo(arqOut)
         
@@ -32,7 +32,7 @@ while (opcao!=0):
             b = [0 for i in range(g.vertices+1)]
             a = [0 for i in range(g.vertices+1)]
 
-            arqOut.write("--------------------------ARQUIVO DE SAIDA--------------------------------------")
+            arqOut.write("\n--------------------------ARQUIVO DE SAIDA--------------------------------------\n")
 
             arqOut.write(f'Grafo de Ordem: {g.ordemGrafo()}\n')
             arqOut.write("\n")
@@ -44,5 +44,11 @@ while (opcao!=0):
             arqOut.write("\n")
             
             grafoAux = Grafo.leArquivo(arqInput)
-            arqOut.write("Verifica Articulação")
+            arqOut.write("Verifica Articulacao")
+            arqOut.write(grafoAux.ehArticulacao(vertice))
+
+
+            arqOut.write("\n--------------------------CICLOOOOOO--------------------------------------\n")
+            
+
 

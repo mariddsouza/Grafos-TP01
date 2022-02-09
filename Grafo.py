@@ -34,7 +34,7 @@ class Grafo:
         arqOut.write('\n')
 
 
-    #----------------------------------------------FUNÇÕES DO TRABALHO-----------------------------------------#
+    #----------------------------------------------FUNCOES DO TRABALHO-----------------------------------------#
     
     #--------ORDEM DO GRAFO----------------#
     def ordemGrafo(self):
@@ -61,3 +61,70 @@ class Grafo:
     #--------GRAU DO VERTICE------#
     def grauVertice(self, u): 
         return len(self.retornaVizinhos(u))
+
+    #-------LER GRAFO-----------#
+    @staticmethod
+    def leArquivo(nomeArquivo): 
+        with open(nomeArquivo, 'r') as arq: 
+
+            #lê a primeira linha
+            vertices = arq.readline() 
+            vertices = int(vertices)
+
+            #cria o grafo G com a quantidade de vértices
+            g = Grafo(vertices) 
+            for line in arq:
+                u, v, peso = line.rstrip('\n').split(' ')
+                g.adicionaAresta(int(u), int(v), float(peso))
+        return g
+    
+    #---------VERIFICA ARTICULACAO--------#
+    def ehArticulacao(self, vertice):
+
+        #Remove o vertice selecionado, se o numero de componentes conexas aumenta, é articulação    
+        #antes de remover o vertice     
+        ccInicial = self.NumberOfconnectedComponents() 
+        verticeRemovido = []
+        for aresta in self.listaAdj[vertice]:
+            verticeRemovido.append(aresta)
+
+        self.listaAdj[vertice].clear()
+        ccFinal = self.NumberOfconnectedComponents()
+        self.listaAdj[vertice] = verticeRemovido
+
+        if (ccFinal > ccInicial):
+            return f'O vértice {vertice} é articulação\n'
+        else:
+            return f'O vértice {vertice} não é articulação\n'
+
+    #-------VERTICES DE CADA COMPONENTE-------#
+    def connectedComponents(self):
+        visited = []
+        cc = []
+        for i in range(self.vertices+1):
+            visited.append(False)
+        for v in range(self.vertices+1):
+            if visited[v] == False:
+                temp = []
+                #cc.append(self.DFSUtil(temp, v, visited))
+                cc.append(self._DFS(v, visited, temp))
+        return cc[1:]
+    
+    #------NUMERO DE COMPONENTES CONEXAS DO GRAFO------#
+    def NumberOfconnectedComponents(self):
+         
+        # marcar todos vertices como n visitados
+        visited = [False for i in range(self.vertices+1)]
+         
+        # armazenar o numero de componentes conectados
+        count = 0
+        temp = []
+        for v in range(self.vertices+1):
+            if (visited[v] == False):
+                #self.DFSUtil2(v, visited)
+                self._DFS(v, visited, temp)
+                count += 1
+
+        return count-1
+
+    

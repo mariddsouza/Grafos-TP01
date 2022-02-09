@@ -15,3 +15,34 @@ while (opcao!=0):
     print("| (0) - Sair                                                           |")
     print("|----------------------------------------------------------------------|")
     opcao = int(input())
+
+    if (opcao == 1): 
+        print("\n")
+        arqInput = input("Insira o nome do arquivo de entrada: ")
+        g = Grafo.leArquivo(arqInput)
+        nomeOut = input("Insira o nome do arquivo de saida: ")
+
+        with open(nomeOut, "w") as arqOut:
+            arqOut.write("--------------------------IMPRIMINDO GRAFO--------------------------------------")
+
+            g.imprimeGrafo(arqOut)
+        
+            arqOut.write("\n----------------------------------------------------------------------------\n")
+            vertice = int(input(f'Selecione o vertice: (1 - {g.vertices})\n'))
+            b = [0 for i in range(g.vertices+1)]
+            a = [0 for i in range(g.vertices+1)]
+
+            arqOut.write("--------------------------ARQUIVO DE SAIDA--------------------------------------")
+
+            arqOut.write(f'Grafo de Ordem: {g.ordemGrafo()}\n')
+            arqOut.write("\n")
+            arqOut.write(f'Grafo de tamanho: {g.tamanhoGrafo()}\n')
+            arqOut.write("\n")
+            arqOut.write(f'Vizinhos do vértice {vertice}: {g.retornaVizinhos(vertice)}\n')
+            arqOut.write("\n")
+            arqOut.write(f'Grau do vertice {vertice}: {g.grauVertice(vertice)}\n')
+            arqOut.write("\n")
+            
+            grafoAux = Grafo.leArquivo(arqInput)
+            arqOut.write("Verifica Articulação")
+

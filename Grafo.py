@@ -6,19 +6,23 @@ class Grafo:
         self.vertices = vertices
 
         #conteudo das linhas em branco, vertices = numero de linhas
-        self.listaAdj = [[] for i in range(self.vertices+1)] 
+        self.grafo = [[0]*self.vertices for i in range(self.vertices)]
+ 
     
 
-    def adicionaAresta(self, u, v, peso):
+    def adiciona_aresta(self, u, v):
+        # estou pensando em grafos direcionados simples
+        self.grafo[u-1][v-1] = 1  #trocar = por += ser for grafo múltiplo
 
-        #adiciona v e o peso na linha/vertice u    
-        self.listaAdj[u].append([v, peso]) 
+       # self.grafo[v-1][u-1] = 1 (caso o grafo não seja direcionado)
 
-        #adiciona u e o peso na linha/vertice v
-        self.listaAdj[v].append([u, peso]) 
+    def mostra_matriz(self):
+        print('A matriz de adjacências é:')
+        for i in range(self.vertices):
+            print(self.grafo[i])
 
     
-    def imprimeGrafo(self, arqOut):
+    '''def imprimeGrafo(self, arqOut):
 
         for i in range(1,self.vertices+1):
             print(f'{i}:', end='  ')
@@ -31,7 +35,7 @@ class Grafo:
             arqOut.write('\n')
 
         print('')
-        arqOut.write('\n')
+        arqOut.write('\n')'''
 
 
     #----------------------------------------------FUNCOES DO TRABALHO-----------------------------------------#
@@ -51,11 +55,10 @@ class Grafo:
     #--------RETORNA VIZINHOS DE UM VERTICE FORNECIDO--------#
     def retornaVizinhos(self, u):
         vizinhos = []
-        listaVizinhos = self.listaAdj[u]
-        i=0
-        while (i<len(listaVizinhos)):
-            vizinhos.append(listaVizinhos[i][0])
-            i+=1
+        listaVizinhos = self.grafo[u]
+        for i in listaVizinhos:
+            if i!=0:
+                vizinhos.append(i)
         return vizinhos
     
     #--------GRAU DO VERTICE------#

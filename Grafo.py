@@ -1,106 +1,87 @@
-#Implementa as funções para a biblioteca de Grafos nao direcionados ponderados
-
 class Grafo:
+    #Implementa Grafos nao direcionados ponderados
 
     def __init__(self, vertices):
         self.vertices = vertices
+        self.listaAdj = [[] for i in range(self.vertices+1)] #conteudo das linhas em branco, vertices = numero de linhas
 
-        #conteudo das linhas em branco, vertices = numero de linhas
-        self.grafo = [[0]*self.vertices for i in range(self.vertices)]
- 
-    
+    def adicionaAresta(self, u, v, peso):
+        self.listaAdj[u].append([v, peso]) #adiciona v e o peso na linha/vertice u
+        self.listaAdj[v].append([u, peso]) #adiciona u e o peso na linha/vertice v
 
-    def adiciona_aresta(self, u, v):
-        # estou pensando em grafos direcionados simples
-        self.grafo[u-1][v-1] = 1  #trocar = por += ser for grafo múltiplo
-
-       # self.grafo[v-1][u-1] = 1 (caso o grafo não seja direcionado)
-
-    def mostra_matriz(self):
-        print('A matriz de adjacências é:')
-        for i in range(self.vertices):
-            print(self.grafo[i])
-
-    
-    '''def imprimeGrafo(self, arqOut):
-
+    def imprimeGrafo(self):
         for i in range(1,self.vertices+1):
             print(f'{i}:', end='  ')
-            arqOut.write(f'{i}: ')
-
+            '''arqOut.write(f'{i}: ')'''
             for j in self.listaAdj[i]:
                 print(f'{j} -', end='  ')
-                arqOut.write(f'{j} - ')
+                '''arqOut.write(f'{j} - ')'''
             print('')
-            arqOut.write('\n')
-
+            '''arqOut.write('\n')'''
         print('')
-        arqOut.write('\n')'''
+        '''arqOut.write('\n')'''
 
 
-    #----------------------------------------------FUNCOES DO TRABALHO-----------------------------------------#
-    
-    #--------ORDEM DO GRAFO----------------#
+    def exibeInformacoes(self, v):
+        print(f'Grafo de Ordem: {self.ordemGrafo()}')
+        print(f'Grafo de tamanho: {self.tamanhoGrafo()}')
+        print(f'Vizinhos do vértice {v}: {self.retornaVizinhos(v)}')
+        print(f'Grau do vértice {v}: {self.grauVertice(v)}')
+        visited = [False for i in range(self.vertices + 1)]
+        temp = []
+        print(f'Lista da busca: {self.DFSlista(v, visited, temp)[0]}')
+        print(f'Número de componentes conexas: {self.NumberOfconnectedComponents()}')
+        print(f'Vértices de componentes conexas: {self.connectedComponents()}')
+                
     def ordemGrafo(self):
-            return self.vertices
+        return self.vertices
 
-    #-------TAMANHO DO GRAFO--------------#
-    def tamanhoGrafo(self): 
+    def tamanhoGrafo(self): #tamanho = nVértices + nArestas (n arestas = Soma dos Graus dos vertices/2)
         somaGraus = 0
         for i in range(self.vertices):
             somaGraus += self.grauVertice(i)
-        
+
         return int(self.vertices + somaGraus/2)
 
-    #--------RETORNA VIZINHOS DE UM VERTICE FORNECIDO--------#
     def retornaVizinhos(self, u):
         vizinhos = []
-        listaVizinhos = self.grafo[u]
-        for i in listaVizinhos:
-            if i!=0:
-                vizinhos.append(i)
+        listaVizinhos = self.listaAdj[u]
+        i=0
+        while (i<len(listaVizinhos)):
+            vizinhos.append(listaVizinhos[i][0])
+            i+=1
         return vizinhos
-    
-    #--------GRAU DO VERTICE------#
-    def grauVertice(self, u): 
+
+    def grauVertice(self, u): #Grau = n de vertices ligados a ele/ n de vizinhos
         return len(self.retornaVizinhos(u))
 
-    #-------LER GRAFO-----------#
     @staticmethod
-    def leArquivo(nomeArquivo): 
-        with open(nomeArquivo, 'r') as arq: 
-
-            #lê a primeira linha
-            vertices = arq.readline() 
+    def leArquivo(nomeArquivo): #Função para ler e criar grafo a partir de arquivo, retorna o grafo criado
+        with open(nomeArquivo, 'r') as arq: #Para chamar utilize nomeGrafo = Grafo.leArquivo(nomeArquivo)
+            vertices = arq.readline() #lê a primeira linha
             vertices = int(vertices)
-
-            #cria o grafo G com a quantidade de vértices
-            g = Grafo(vertices) 
+            g = Grafo(vertices) #cria o grafo G com a quantidade de vértices
             for line in arq:
                 u, v, peso = line.rstrip('\n').split(' ')
                 g.adicionaAresta(int(u), int(v), float(peso))
         return g
-    
-    #---------VERIFICA ARTICULACAO--------#
-    def ehArticulacao(self, vertice):
+    def dfs(self, vertice):
+        visitados = set()
+        teste=[]
+        def dfs_iterativa(self, vertice_fonte):
+            visitados.add(vertice_fonte)
+            falta_visitar = [vertice_fonte]
+            
+            while falta_visitar:
+                vertice = falta_visitar.pop()
+                for vizinho in self.listaAdj[vertice]:
+                    teste.append(vizinho[0])
+                    if vizinho[0] not in visitados:
+                        visitados.add(vizinho[0])
+                        falta_visitar.append(vizinho[0])
 
-        #Remove o vertice selecionado, se o numero de componentes conexas aumenta, é articulação    
-        #antes de remover o vertice     
-        ccInicial = self.NumberOfconnectedComponents() 
-        verticeRemovido = []
-        for aresta in self.listaAdj[vertice]:
-            verticeRemovido.append(aresta)
-
-        self.listaAdj[vertice].clear()
-        ccFinal = self.NumberOfconnectedComponents()
-        self.listaAdj[vertice] = verticeRemovido
-
-        if (ccFinal > ccInicial):
-            return f'O vértice {vertice} é articulação\n'
-        else:
-            return f'O vértice {vertice} não é articulação\n'
-
-    #-------VERTICES DE CADA COMPONENTE-------#
+        dfs_iterativa(self, vertice)
+        return teste
     def connectedComponents(self):
         visited = []
         cc = []
@@ -112,8 +93,6 @@ class Grafo:
                 #cc.append(self.DFSUtil(temp, v, visited))
                 cc.append(self._DFS(v, visited, temp))
         return cc[1:]
-    
-    #------NUMERO DE COMPONENTES CONEXAS DO GRAFO------#
     def NumberOfconnectedComponents(self):
          
         # marcar todos vertices como n visitados
@@ -130,124 +109,97 @@ class Grafo:
 
         return count-1
 
-
-     # Adiciona aresta (não direcionada)
-    def addEdge(self,u,v): 
-        self.graph[u].append(v) 
-        self.graph[v].append(u) 
-
-    #Função para remover a aresta u-v do grafo
-    def rmvEdge(self, u, v): 
-        for index, key in enumerate(self.graph[u]): 
-            if key == v: 
-                self.graph[u].pop(index) 
-        for index, key in enumerate(self.graph[v]): 
-            if key == u: 
-                self.graph[v].pop(index) 
-        ### Importante - auxiliar para verificar pontes ###
-  # Função baseada no DFS para contar os vértices alcançaveis por meio do vértice V.
-    def DFSCount(self, v, visited): 
-        count = 1
-        visited[v] = True
-        for i in self.graph[v]: 
-            if visited[i] == False: 
-                count = count + self.DFSCount(i, visited)        
-        return count 
-
-    # Função que verifica se a aresta u-v pode ser considerada uma aresta no Tour de Euler
-    def isValidNextEdge(self, u, v): 
-        # A aresta u-v é valida em um dos seguintes casos: 
-
-        # 1) Se v é o único vértice adjacente a u
-        if len(self.graph[u]) == 1: 
-            return True
-        else: 
-            ''' 
-            2) Caso existam múltiplos vértices adjacentes u-v
-            verificar se não é uma ponte
-                
-            Para checarmos se é uma ponte: 
-            2.a) contamos os vértices alcançaveis a partir de u'''  
-            visited =[False]*(self.V) 
-            count1 = self.DFSCount(u, visited) 
-
-            '''2.b) Remove a aresta (u, v) e após remover verificamos a quantidade de vértices alcançaveis a partir de u novamente'''
-            self.rmvEdge(u, v) 
-            visited =[False]*(self.V) 
-            count2 = self.DFSCount(u, visited) 
-
-            #2.c) Retornamos a aresta ao grafo, pois ela só foi removida para verificar se formavam-se pontes
-            self.addEdge(u,v) 
-
-            # 2.d) Se count1 é maior que count2, então a aresta (u, v) é uma ponte e não pode ser removida retornando falso.
-            return False if count1 > count2 else True
+    def _DFS(self, s, visited, temp):  # prints all vertices in DFS manner from a given source.
+                    # Initially mark all verices as not visited
 
 
-    # Printa o tour de Euler tour começando pelo vértice u 
-    def printEulerUtil(self, u): 
-        #Recorre para todos os vértices adjacentes a este vértice
-        for v in self.graph[u]: 
-            #Se a vertice u-v não for removida e for uma próxima borda válida
-            if self.isValidNextEdge(u, v): 
-                print("%d-%d " %(u,v)), 
-                self.rmvEdge(u, v) 
-                self.printEulerUtil(v) 
+        # Create a stack for DFS
+        stack = []
 
+            # Push the current source node.
+        stack.append(s)
 
-    
-    '''The main function that print Eulerian Trail. It first finds an odd 
-    degree vertex (if there is any) and then calls printEulerUtil() 
-    to print the path '''
-    def printEulerTour(self): 
-        #encontre um vertice com grau impar 
-        u = 0
-        for i in range(self.V): 
-            if len(self.graph[i]) %2 != 0 : 
-                u = i 
-                break
-        # Imprimir tour começando do vértice ímpar 
-        print ("\n") 
-        self.printEulerUtil(u)
+        while (len(stack)):
+            # Pop a vertex from stack and print it
+            s = stack[-1]
+            stack.pop()
+            # Stack may contain same vertex twice. So
+            # we need to print the popped item only
+            # if it is not visited.
+            if (not visited[s]):
+                temp.append(s)
+                #print(s, end=' ')
+                visited[s] = True
 
+            # Get all adjacent vertices of the popped vertex s
+            # If a adjacent has not been visited, then push it
+            # to the stack.
+            for node in self.listaAdj[s]:
+                    if (not visited[node[0]]):
+                        stack.append(node[0])
+                        #print(f'Arestas de Retorno: {s} - {node[0]}')
+        return temp
 
+    def DFSlista(self, s, visited, temp):  # prints all vertices in DFS manner from a given source.
+        # Initially mark all verices as not visited
+        # Create a stack for DFS
+        stack = []
+        arestas = []
+        # Push the current source node.
+        stack.append(s)
+        while (len(stack)):
+            # Pop a vertex from stack and print it
+            s = stack[-1]
+            stack.pop()
+            # Stack may contain same vertex twice. So
+            # we need to print the popped item only
+            # if it is not visited.
+            if (not visited[s]):
+                temp.append(s)
+                # print(s, end=' ')
+                visited[s] = True
+            # Get all adjacent vertices of the popped vertex s
+            # If a adjacent has not been visited, then push it
+            # to the stack.
+            for node in self.listaAdj[s]:
 
-    #KRUSKAL
-    def search(self, parent, i):
-        if parent[i] == i:
-            return i
-        return self.search(parent, parent[i])
- 
-    def apply_union(self, parent, rank, x, y):
-        xroot = self.search(parent, x)
-        yroot = self.search(parent, y)
-        if rank[xroot] < rank[yroot]:
-            parent[xroot] = yroot
-        elif rank[xroot] > rank[yroot]:
-            parent[yroot] = xroot
+                if (not visited[node[0]]):
+                    stack.append(node[0])
+                    arestas.append([s , node[0]])
+        while 0 in temp:
+            temp.remove(0)
+        return temp, arestas
+
+    def ehArticulacao(self, vertice):#Remove o vertice selecionado, se
+                                    #Numero de componentes conexas aumenta, é articulação
+        ccInicial = self.NumberOfconnectedComponents() #antes de remover o vertice
+        verticeRemovido = []
+        for aresta in self.listaAdj[vertice]:
+            verticeRemovido.append(aresta)
+        self.listaAdj[vertice].clear()
+        ccFinal = self.NumberOfconnectedComponents()
+        self.listaAdj[vertice] = verticeRemovido
+        if (ccFinal > ccInicial):
+            return f'O vértice {vertice} é articulação\n'
         else:
-            parent[yroot] = xroot
-            rank[xroot] += 1
- 
-  
-    def kruskal(self):
-        result = []
-        i, e = 0, 0
-        self.graph = sorted(self.graph, key=lambda item: item[2])
-        parent = []
-        rank = []
-        for node in range(self.V):
-            parent.append(node)
-            rank.append(0)
-        while e < self.V - 1:
-            u, v, w = self.graph[i]
-            i = i + 1
-            x = self.search(parent, u)
-            y = self.search(parent, v)
-            if x != y:
-                e = e + 1
-                result.append([u, v, w])
-                self.apply_union(parent, rank, x, y)
-        for u, v, weight in result:
-            print("Edge:",u, v,end =" ")
-            print("-",weight)
-    
+            return f'O vértice {vertice} não é articulação\n'
+
+    def ehPonte(self, v1):
+        v2 = int(input(f'Selecione um segundo vértice para verificar se a aresta é ponte: (1 - {self.vertices}): \n'))
+        ccInicial = self.NumberOfconnectedComponents()  # antes de remover o vertice
+        for aresta in self.listaAdj[v1]:
+            if (aresta[0] == v2):
+                self.listaAdj[v1].remove(aresta)
+        ccFinal = self.NumberOfconnectedComponents()
+        if (ccFinal > ccInicial):
+            return f'A aresta {v1} - {v2} é ponte\n'
+        else:
+            return f'A aresta {v1} - {v2} não é ponte\n'
+
+    def getPesoAresta(self, v1, v2):
+        aresta = []
+        vizinhosV1 = self.listaAdj[v1]
+        for j in range(len(vizinhosV1)):
+            if (vizinhosV1[j][0] == v2):
+                aresta = vizinhosV1[j][1]
+        return aresta

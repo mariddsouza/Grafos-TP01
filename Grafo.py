@@ -1,10 +1,12 @@
 #Implementa as funções para a biblioteca de Grafos nao direcionados ponderados
 from collections import defaultdict 
+min_index=0
 class Grafo:
-
+   
     def __init__(self, vertices):
         self.vertices = vertices
         self.grafo2 = defaultdict(list)
+        self.graph = []
         #conteudo das linhas em branco, vertices = numero de linhas
         self.grafo = [[0]*self.vertices for i in range(self.vertices)]
  
@@ -28,7 +30,9 @@ class Grafo:
     #--------ORDEM DO GRAFO----------------#
     def ordemGrafo(self):
             return self.vertices
-
+    #-------Densidade---------------
+    def densidade_grafo(self):
+        return self.tamanhoGrafo() / self.ordemGrafo()
     #-------TAMANHO DO GRAFO--------------#
     def tamanhoGrafo(self): 
         somaGraus = 0
@@ -67,6 +71,7 @@ class Grafo:
                 u, v, peso = line.rstrip('\n').split(' ')
                 g.adiciona_aresta(int(u),int(v), float(peso))
                 g.addEdge(int(u)-1,int(v)-1)
+                g.addEdgeKruskal(int(u)-1,int(v)-1, float(peso))
             
         return g
     
@@ -141,7 +146,6 @@ class Grafo:
         else:
             return
 
-    
     def printEulerTour(self,arqOut): 
         #encontre um vertice com grau impar 
         u = 0
@@ -153,3 +157,84 @@ class Grafo:
         # Imprimir tour começando do vértice ímpar  
         self.printEulerUtil(u,arqOut,0)
   
+  #------------------KRUSKAL--------
+    
+    
+    def addEdgeKruskal(self, u, v, w):
+        self.graph.append([u, v, w])
+ 
+    # Função para encontrar o conjunto de um elemento i
+    # (usa comprensão de caminho)
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+ 
+    # vai fazer a união dos conjuntos x e y
+    # (usa união por rank)
+    def union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+ 
+        # Anexa uma árvore de classificação menor sob a raiz da árvore de classificação alta 
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+ 
+        #Se os ranks são os mesmos, então faça um como root e incremente seu rank em 1
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
+ 
+    # Função principal que vai gerar a arvore minima usando kruskal
+    def KruskalMST(self,arqOut):
+ 
+        result = []  # vai armazenar a arvore resultante
+         
+        #index usado para ordenação
+        i = 0
+         
+        #usado para o resultado[]
+        e = 0
+ 
+        '''Classifica todas as arestas em
+        ordem não decrescente pelos pesos.
+        Se não tivermos permissão para alterar o
+        grafo, podemos criar uma cópia'''
+        self.graph = sorted(self.graph,
+                            key=lambda item: item[2])
+ 
+        parent = []
+        rank = []
+ 
+        # Crie subconjuntos vertices com elementos únicos
+        for node in range(self.vertices):
+            parent.append(node)
+            rank.append(0)
+ 
+        # O número de arestas a serem tomadas é igual a vertices-1
+        while e < self.vertices - 1:
+ 
+            # Passo 2: Escolha a menor aresta e incremente o índice para a próxima iteração
+            u, v, w = self.graph[i]
+            i = i + 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+ 
+            ''' Se a inclusão desta aresta não causar ciclo, 
+            inclua-a no resultado e incremente o 
+            índice de resultado para a próxima aresta'''
+            if x != y:
+                e = e + 1
+                result.append([u, v, w])
+                self.union(parent, rank, x, y)
+            # Caso contrário, descarte a aresta
+ 
+        minimumCost = 0
+        arqOut.write("\nArvore Geradora Minima: \n")
+        for u, v, weight in result:
+            minimumCost += weight
+            arqOut.write(f'{u+1} -- {v+1} == {weight}\n')
+            
+        arqOut.write(f'Peso total: {minimumCost} \n')

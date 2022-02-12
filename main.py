@@ -49,5 +49,6 @@ while (opcao!=0):
             g.KruskalMST(arqOut)
             #g.caminhoMin(vertice)
             grafoAux = Grafo.leArquivo(arqInput)
-            arqOut.write("Verifica Articulação")
+            arqOut.write("\nBFS\n")
+            g.BFS(arqOut)
 

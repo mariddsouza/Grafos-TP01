@@ -19,9 +19,7 @@ class Grafo:
         self.grafo[v-1][u-1] = p 
     #so pra ficar mais facil de testar
     def mostra_matriz(self, arqOut):
-        print('A matriz de adjacências é:')
         for i in range(self.vertices):
-            print(self.grafo[i])
             arqOut.write(f'\n{self.grafo[i]}')
 
 
@@ -238,3 +236,41 @@ class Grafo:
             arqOut.write(f'{u+1} -- {v+1} == {weight}\n')
             
         arqOut.write(f'Peso total: {minimumCost} \n')
+
+#----------------BFS---------
+    def BFS(self,arqOut):
+        visited = [0 for i in range(self.vertices)]
+
+        # Add the start node to the queue
+        # Node 0 in this case
+        queue = [0]
+
+        # Set the visited value of node 0 to visited
+        visited[0] = 1
+
+        # Dequeue node 0
+        node = queue.pop(0)
+        arqOut.write(f'{node+1} - ')
+
+        while True:
+
+            for x in range (0, len(visited)):
+
+                            # Check is route exists and that node isn't visited
+                if self.grafo[node][x] != 0 and visited[x] == 0:
+
+                                    # Visit node
+                    visited[x] = 1
+
+                                    # Enqueue element
+                    queue.append(x)
+
+            # When queue is empty, break		
+            if len(queue) == 0:
+                break
+
+            else:
+
+                            # Dequeue element from queue
+                node = queue.pop(0)
+                arqOut.write(f'{node+1} - ')

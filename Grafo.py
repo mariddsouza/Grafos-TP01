@@ -9,7 +9,7 @@ class Grafo:
         self.graph = []
         #conteudo das linhas em branco, vertices = numero de linhas
         self.grafo = [[0]*self.vertices for i in range(self.vertices)]
- 
+        self.adj = [[] for i in range(vertices)]
     
 
     def adiciona_aresta(self, u, v, p):
@@ -70,6 +70,7 @@ class Grafo:
                 g.adiciona_aresta(int(u),int(v), float(peso))
                 g.addEdge(int(u)-1,int(v)-1)
                 g.addEdgeKruskal(int(u)-1,int(v)-1, float(peso))
+                g.addc(int(u),int(v))
             
         return g
     
@@ -274,3 +275,35 @@ class Grafo:
                             # Dequeue element from queue
                 node = queue.pop(0)
                 arqOut.write(f'{node+1} - ')
+    
+#componentes conexas
+
+    def Util(self, temp, v, visited):
+ 
+        # Mark the current vertex as visited
+        visited[v] = True
+ 
+        # Store the vertex to list
+        temp.append(v+1)
+ 
+        # Repeat for all vertices adjacent
+        # to this vertex v
+        for i in self.adj[v]:
+            if visited[i] == False:
+                temp = self.Util(temp, i, visited)
+        return temp
+     # Method to retrieve connected components
+    # in an undirected graph
+    def connectedComponents(self):
+        visited = []
+        cc = []
+        for i in range(self.vertices):
+            visited.append(False)
+        for v in range(self.vertices):
+            if visited[v] == False:
+                temp = []
+                cc.append(self.Util(temp, v, visited))
+        return cc
+    def addc(self, v, w):
+        self.adj[v-1].append(w-1)
+        self.adj[w-1].append(v-1)

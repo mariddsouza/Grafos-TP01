@@ -47,8 +47,9 @@ while (opcao!=0):
             g.printEulerTour(arqOut)
             arqOut.write("\n")
             g.KruskalMST(arqOut)
-            #g.caminhoMin(vertice)
             grafoAux = Grafo.leArquivo(arqInput)
             arqOut.write("\nBFS\n")
             g.BFS(arqOut)
+            cc=g.connectedComponents()
+            arqOut.write(f'\nComponentes Conexas : {cc}\n')
 

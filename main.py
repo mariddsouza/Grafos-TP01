@@ -40,6 +40,7 @@ while (opcao!=0):
             arqOut.write("\n")
             arqOut.write(f'Vizinhos do vértice {vertice}: {g.retornaVizinhos(vertice)}\n')
             arqOut.write("\n")
+            g.AP(vertice,arqOut)
             arqOut.write(f'Densidade do Grafo: {g.densidade_grafo()}\n')
             arqOut.write("\n")
             arqOut.write(f'Grau do vertice {vertice}: {g.grauVertice(vertice)}\n')

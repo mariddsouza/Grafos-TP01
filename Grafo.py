@@ -10,6 +10,7 @@ class Grafo:
         #conteudo das linhas em branco, vertices = numero de linhas
         self.grafo = [[0]*self.vertices for i in range(self.vertices)]
         self.adj = [[] for i in range(vertices)]
+        self.Time = 0
     
 
     def adiciona_aresta(self, u, v, p):
@@ -341,3 +342,74 @@ class Grafo:
                 if self.isCyclicUtil(node,visited,recStack) == True:
                     return True
         return False
+
+#articulaçao
+    def APUtil(self, u, visited, ap, parent, low, disc):
+ 
+        # Count of children in current node
+        children = 0
+ 
+        # Mark the current node as visited and print it
+        visited[u]= True
+ 
+        # Initialize discovery time and low value
+        disc[u] = self.Time
+        low[u] = self.Time
+        self.Time += 1
+ 
+        # Recur for all the vertices adjacent to this vertex
+        for v in self.grafo2[u]:
+            # If v is not visited yet, then make it a child of u
+            # in DFS tree and recur for it
+            if visited[v] == False :
+                parent[v] = u
+                children += 1
+                self.APUtil(v, visited, ap, parent, low, disc)
+ 
+                # Check if the subtree rooted with v has a connection to
+                # one of the ancestors of u
+                low[u] = min(low[u], low[v])
+ 
+                # u is an articulation point in following cases
+                # (1) u is root of DFS tree and has two or more children.
+                if parent[u] == -1 and children > 1:
+                    ap[u] = True
+ 
+                #(2) If u is not root and low value of one of its child is more
+                # than discovery value of u.
+                if parent[u] != -1 and low[v] >= disc[u]:
+                    ap[u] = True   
+                     
+                # Update low value of u for parent function calls   
+            elif v != parent[u]:
+                low[u] = min(low[u], disc[v])
+ 
+ 
+    # The function to do DFS traversal. It uses recursive APUtil()
+    def AP(self,verticev,arqOut):
+  
+        # Mark all the vertices as not visited
+        # and Initialize parent and visited,
+        # and ap(articulation point) arrays
+        visited = [False] * (self.vertices)
+        disc = [float("Inf")] * (self.vertices)
+        low = [float("Inf")] * (self.vertices)
+        parent = [-1] * (self.vertices)
+        ap = [False] * (self.vertices) # To store articulation points
+ 
+        # Call the recursive helper function
+        # to find articulation points
+        # in DFS tree rooted with vertex 'i'
+        for i in range(self.vertices):
+            if visited[i] == False:
+                self.APUtil(i, visited, ap, parent, low, disc)
+        ct=0
+        for index, value in enumerate (ap):
+            if value == True: 
+                if index==verticev:
+                    arqOut.write(f'\nO {verticev} é Articulaçao!!\n')
+                    ct+=1
+            else:
+                if ct==0:                
+                    arqOut.write(f'\nO {verticev} nao é Articulaçao!!\n')
+                    ct+=1

@@ -52,4 +52,8 @@ while (opcao!=0):
             g.BFS(arqOut)
             cc=g.connectedComponents()
             arqOut.write(f'\nComponentes Conexas : {cc}\n')
+            if g.isCyclic() == 1:
+                arqOut.write("\nO GRAFO POSSUI CICLO\n")
+            else:
+                arqOut.write("\nO GRAFO NÃO POSSUI CICLO\n")
 
